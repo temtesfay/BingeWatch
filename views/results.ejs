@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/main.css">
+    <title>Search Results</title>
+    <style>
+        /* Define grid layout for movies */
+        .movies-grid {
+            margin-right: 1em;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust grid columns as needed */
+            gap: 20px; /* Adjust gap between grid items */
+
+        }
+
+        /* Style each movie item */
+        .movie {
+            border: 0px solid #ccc;
+            padding: 10px;
+            text-align: left;
+            /* transition: transform 0.3s; Add transition effect to transform property */
+        }
+
+        .movies-grid :hover {
+            transform: scale(1.05); 
+        }
+
+        /* Style movie title */
+        .movie h2 {
+            margin-bottom: 5px;
+            font-size: 16px;
+            /* Limit title to 2 lines and add ellipsis for overflow */
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Style movie poster */
+        .movie img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Style movie overview */
+        .movie p {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+
+        .movieInfoContainer{
+            background-color: rgba(108, 99, 215, 0.11); /* Opacity set to 11% */
+            padding: 10px; /* Add padding for spacing */
+        }
+
+        /* Style movie year and rating */
+        .movie .movie-info {
+            display: flex; /* Display year and rating on the same line */
+            justify-content: space-between; /* Add space between year and rating */
+            align-items: center; /* Center align items vertically */
+            margin-top: 10px; /* Add margin for spacing */
+        }
+
+        /* Style movie rating */
+        .movie .movie-info .rating {
+            padding: 5px 10px; /* Add padding for spacing */
+            border-radius: 5px; /* Add border radius for rounded corners */
+            color: white; /* Set text color to white */
+        }
+
+        /* Style for green rating */
+        .movie .movie-info .rating.green {
+            background-color: green;
+        }
+
+        /* Style for yellow rating */
+        .movie .movie-info .rating.yellow {
+            background-color: rgba(242, 255, 5, 0.6); 
+        }
+
+        /* Style for red rating */
+        .movie .movie-info .rating.red {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-text"><a href="/" style="color: #FFFFFF;
+          text-decoration: none;">HOME</a> </div>
+      </div>
+    <h1 style="margin-top: 3em;">Search Results</h1>
+    <div class="movies-grid">
+        <% movies.filter(movie => movie.poster_path).forEach(movie => { %>
+            <div class="movie" data-id="<%= movie.id %>"> <!-- Add data-id attribute -->
+                <img src="https://image.tmdb.org/t/p/w500/<%= movie.poster_path %>" alt="<%= movie.title %>">
+                <div class="movieInfoContainer">
+                    <h2><%= movie.title %></h2>
+                    <p><%= movie.overview %></p>
+                    <div class="movie-info">
+                        <div class="year"><%= movie.release_date.substring(0, 4) %></div>
+                        <% var ratingClass = '';
+                            if (movie.vote_average * 10 >= 80) {
+                                ratingClass = 'green';
+                            } else if (movie.vote_average * 10 >= 60) {
+                                ratingClass = 'yellow';
+                            } else {
+                                ratingClass = 'red';
+                            }
+                        %>
+                        <div class="rating <%= ratingClass %>"><%= (movie.vote_average * 10).toFixed(0) %>%</div> <!-- Round rating to two decimal places -->
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</body>
+<script>
+    // Event listener for clicks on movie titles
+    document.querySelectorAll('.movie').forEach(title =>
+    {
+    title.addEventListener('click', () => {
+        const movieId = title.closest('.movie').dataset.id;
+        window.location.href = `/movie/${movieId}`; // Redirect to movie details page
+    });
+});
+</script>
+
+
+
+
+
+</html>
